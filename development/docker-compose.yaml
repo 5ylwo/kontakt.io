@@ -38,3 +38,13 @@ services:
       - 8085:9000
     environment:
       KAFKA_BROKERCONNECT: broker-temp-task:9092
+
+  postgres-db:
+    image: 'postgres:13.1-alpine'
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres-db
+      - POSTGRES_USER=compose-postgres-user
+      - POSTGRES_PASSWORD=compose-postgres-password

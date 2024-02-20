@@ -2,11 +2,10 @@ package io.kontakt.apps.anomaly.detector;
 
 import io.kontak.apps.event.Anomaly;
 import io.kontak.apps.event.TemperatureReading;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.time.Duration;
 import java.time.Instant;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 public class TemperatureMeasurementsListenerTest extends AbstractIntegrationTest {
 
@@ -30,7 +29,7 @@ public class TemperatureMeasurementsListenerTest extends AbstractIntegrationTest
             TemperatureReading temperatureReading = new TemperatureReading(20d, "room", "thermometer", Instant.parse("2023-01-01T00:00:00.000Z"));
             producer.produce(temperatureReading.thermometerId(), temperatureReading);
             consumer.drain(
-                    consumerRecords -> consumerRecords.stream().anyMatch(r -> r.value().thermometerId().equals(temperatureReading.thermometerId())),
+                    consumerRecords -> consumerRecords.stream().anyMatch(r -> r.value().temperatureReading().thermometerId().equals(temperatureReading.thermometerId())),
                     Duration.ofSeconds(5)
             );
         }
