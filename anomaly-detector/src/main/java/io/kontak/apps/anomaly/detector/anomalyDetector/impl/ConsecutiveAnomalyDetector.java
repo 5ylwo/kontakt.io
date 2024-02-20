@@ -1,5 +1,6 @@
 package io.kontak.apps.anomaly.detector.anomalyDetector.impl;
 
+import io.kontak.apps.anomaly.detector.anomalyDetector.AnomalyCandidate;
 import io.kontak.apps.anomaly.detector.anomalyDetector.AnomalyDetector;
 import io.kontak.apps.detector.ANOMALY_DETECTOR_TYPE;
 import io.kontak.apps.event.Anomaly;
@@ -13,33 +14,47 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConsecutiveAnomalyDetector implements AnomalyDetector {
 
-    Queue<TemperatureReading> savedTemperatureReadings = new LinkedList<>();
+    Queue<AnomalyCandidate> anomalyCandidates = new LinkedList<>();
     int consecutiveReadingsAmount = 10;
     double anomalyThreshold = 5d;
 
     @Override
     public Stream<Anomaly> apply(TemperatureReading temperatureReading) {
 
-        selectConsecutiveReadings(temperatureReading);
+        selectConsecutiveReadings(new AnomalyCandidate(temperatureReading));
 
-        double sumOfConsecutiveReadings = savedTemperatureReadings.stream().collect(Collectors.summingDouble(reading -> reading.temperature()));
-
-        return savedTemperatureReadings.stream()
-            .filter(reading -> isAnomaly(reading, sumOfConsecutiveReadings))
-            .map(reading -> new Anomaly(reading, ANOMALY_DETECTOR_TYPE.CONSECUTIVE_ANOMALY));
-    }
-
-    private void selectConsecutiveReadings(TemperatureReading temperatureReading) {
-        savedTemperatureReadings.add(temperatureReading);
-
-        if(savedTemperatureReadings.size() > consecutiveReadingsAmount) {
-            savedTemperatureReadings.remove();
+        if(anomalyCandidates.size() == consecutiveReadingsAmount) {
+            return detectNewAnomalies();
+        } else {
+            return Stream.of();
         }
     }
 
-    private boolean isAnomaly(TemperatureReading temperatureReading, double sumOfConsecutiveReadings) {
+    private Stream<Anomaly> detectNewAnomalies() {
 
-        double temperatureReadingTemperature = temperatureReading.temperature();
+        double sumOfConsecutiveReadings = anomalyCandidates.stream()
+            .collect(Collectors.summingDouble(anomalyCandidate -> anomalyCandidate.getTemperatureReading().temperature()));
+
+        return anomalyCandidates.stream()
+            .filter(anomalyCandidate -> !anomalyCandidate.isDetectedAnomaly())
+            .filter(anomalyCandidate -> isAnomaly(anomalyCandidate, sumOfConsecutiveReadings))
+            .map(anomalyCandidate -> anomalyCandidate.setAsDetectedAnomaly())
+            .map(anomalyCandidate -> new Anomaly(anomalyCandidate.getTemperatureReading(),
+                ANOMALY_DETECTOR_TYPE.CONSECUTIVE_ANOMALY));
+    }
+
+
+    private void selectConsecutiveReadings(AnomalyCandidate anomalyCandidate) {
+        anomalyCandidates.add(anomalyCandidate);
+
+        if(anomalyCandidates.size() > consecutiveReadingsAmount) {
+            anomalyCandidates.remove();
+        }
+    }
+
+    private boolean isAnomaly(AnomalyCandidate anomalyCandidate, double sumOfConsecutiveReadings) {
+
+        double temperatureReadingTemperature = anomalyCandidate.getTemperatureReading().temperature();
 
         double averageOfTheRemainingReadings = (sumOfConsecutiveReadings - temperatureReadingTemperature) / (consecutiveReadingsAmount - 1);
         return Math.abs(temperatureReadingTemperature - averageOfTheRemainingReadings) >= anomalyThreshold;
