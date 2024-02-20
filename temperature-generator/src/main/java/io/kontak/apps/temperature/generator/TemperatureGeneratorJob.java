@@ -1,9 +1,8 @@
 package io.kontak.apps.temperature.generator;
 
+import java.util.concurrent.TimeUnit;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class TemperatureGeneratorJob {

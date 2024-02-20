@@ -2,12 +2,11 @@ package io.kontakt.apps.temperature.generator;
 
 import io.kontak.apps.event.TemperatureReading;
 import io.kontak.apps.temperature.generator.TemperatureStreamPublisher;
+import java.time.Duration;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
-import java.time.Duration;
-import java.time.Instant;
 
 public class TemperatureStreamPublisherTest extends AbstractIntegrationTest {
 

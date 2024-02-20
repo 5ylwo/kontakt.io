@@ -1,15 +1,14 @@
 package io.kontakt.apps.anomaly.detector;
 
+import java.io.Closeable;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-
-import java.io.Closeable;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TestKafkaProducer<T> implements Closeable {
     private final Producer<String, T> producer;
