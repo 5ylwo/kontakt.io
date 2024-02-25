@@ -1,49 +1,36 @@
 package io.kontak.apps.anomaly.detector;
 
 import io.kontak.apps.anomaly.detector.anomalyDetector.AnomalyDetector;
-import io.kontak.apps.anomaly.detector.config.Config;
-import io.kontak.apps.anomaly.detector.config.Config.AnomalyDetectorType;
+import io.kontak.apps.anomaly.detector.config.detectorTypes.AnomalyDetectorTypeConfig;
 import io.kontak.apps.event.Anomaly;
 import io.kontak.apps.event.TemperatureReading;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AnomalyDetectorCoordinator {
-  private final HashMap<AnomalyDetectorType, HashMap<String, AnomalyDetector>> anomalyDetectorMap = new HashMap();
 
-  public AnomalyDetectorCoordinator(Config config) {
+  private final AnomalyDetectorTypeConfig anomalyDetectorTypeConfig;
+  private final HashMap<String, AnomalyDetector> thermometerIdToAnomalyDetector = new HashMap<>();
+  public AnomalyDetectorCoordinator(AnomalyDetectorTypeConfig anomalyDetectorTypeConfig) {
 
-    config.anomalyDetectorTypes().stream()
-        .filter(anomalyDetectorConfig -> anomalyDetectorConfig.enabled())
-        .forEach(anomalyDetectorConfig -> anomalyDetectorMap.put(anomalyDetectorConfig, new HashMap<>()));
+    this.anomalyDetectorTypeConfig = anomalyDetectorTypeConfig;
   }
 
-  public List<Anomaly> detectAnomaliesForOneThermometer(String thermometerId, TemperatureReading temperatureReading) {
+  public List<Anomaly> detectAnomaliesForOneThermometer(TemperatureReading temperatureReading) {
+    AnomalyDetector anomalyDetector = getOrCreateAnomalyDetector(temperatureReading.thermometerId());
 
-    return anomalyDetectorMap.entrySet().stream()
-        .flatMap(anomalyDetectorEntry -> detectAnomaliesForOneAnomalyDetector(anomalyDetectorEntry.getKey(), anomalyDetectorEntry.getValue(), thermometerId, temperatureReading))
-        .collect(Collectors.toList());
+    return anomalyDetector.apply(temperatureReading).collect(Collectors.toList());
   }
 
-
-  private Stream<Anomaly> detectAnomaliesForOneAnomalyDetector(AnomalyDetectorType anomalyDetectorConfig, HashMap<String, AnomalyDetector> thermometerMap, String thermometerId, TemperatureReading temperatureReading) {
-
-    AnomalyDetector anomalyDetector = getOrCreateAnomalyDetector(anomalyDetectorConfig, temperatureReading.thermometerId(), thermometerMap);
-
-    return anomalyDetector.apply(temperatureReading);
-  }
-
-  private AnomalyDetector getOrCreateAnomalyDetector(AnomalyDetectorType anomalyDetectorConfig, String thermometerId, HashMap<String, AnomalyDetector> thermometerMap) {
-
-    AnomalyDetector anomalyDetector = thermometerMap.get(thermometerId);
+  private AnomalyDetector getOrCreateAnomalyDetector(String thermometerId) {
+    AnomalyDetector anomalyDetector = thermometerIdToAnomalyDetector.get(thermometerId);
 
     if (anomalyDetector == null) {
-      anomalyDetector = AnomalyDetectorFactory.buildAnomalyDetector(anomalyDetectorConfig);
-      thermometerMap.put(thermometerId, anomalyDetector);
+      anomalyDetector = AnomalyDetectorFactory.buildAnomalyDetector(anomalyDetectorTypeConfig);
+      thermometerIdToAnomalyDetector.put(thermometerId, anomalyDetector);
     }
 
     return anomalyDetector;

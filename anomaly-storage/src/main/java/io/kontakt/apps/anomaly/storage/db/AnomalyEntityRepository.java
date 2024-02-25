@@ -1,6 +1,6 @@
 package io.kontakt.apps.anomaly.storage.db;
 
-import io.kontak.apps.detector.ANOMALY_DETECTOR_TYPE;
+import io.kontak.apps.detector.AnomalyDetectorType;
 import io.kontakt.apps.anomaly.storage.db.entities.AnomalyEntity;
 import io.kontakt.apps.anomaly.storage.db.entities.AnomalyEntityId;
 import java.util.List;
@@ -18,6 +18,6 @@ public interface AnomalyEntityRepository extends
   List<String> getThermometersAboveThreshold(Long threshold);
 
   @Query("SELECT da.anomalyEntityId.thermometerId FROM AnomalyDetectorTypeEntity adt inner join adt.detectedAnomalies da WHERE adt.detectorType = ?1 GROUP BY da.anomalyEntityId.thermometerId HAVING count(*) > ?2")
-  List<String> getThermometersForDetectorAboveThreshold(ANOMALY_DETECTOR_TYPE anomalyDetectorType, Long threshold);
+  List<String> getThermometersForDetectorAboveThreshold(AnomalyDetectorType anomalyDetectorType, Long threshold);
 
 }

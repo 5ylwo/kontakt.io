@@ -1,6 +1,6 @@
 package io.kontakt.apps.anomaly.storage.db.entities;
 
-import io.kontak.apps.detector.ANOMALY_DETECTOR_TYPE;
+import io.kontak.apps.detector.AnomalyDetectorType;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -18,7 +18,7 @@ public class AnomalyDetectorTypeEntity {
 
   @Id
   @Enumerated(EnumType.STRING)
-  private ANOMALY_DETECTOR_TYPE detectorType;
+  private AnomalyDetectorType detectorType;
 
   @ManyToMany
   @JoinTable(
@@ -28,7 +28,7 @@ public class AnomalyDetectorTypeEntity {
   Set<AnomalyEntity> detectedAnomalies = new HashSet<>();
 
   public AnomalyDetectorTypeEntity(){}
-  public AnomalyDetectorTypeEntity(ANOMALY_DETECTOR_TYPE detectorType) {
+  public AnomalyDetectorTypeEntity(AnomalyDetectorType detectorType) {
     this.detectorType = detectorType;
   }
 
@@ -36,7 +36,7 @@ public class AnomalyDetectorTypeEntity {
     detectedAnomalies.add(anomalyEntity);
   }
 
-  public ANOMALY_DETECTOR_TYPE getDetectorType() {
+  public AnomalyDetectorType getDetectorType() {
     return detectorType;
   }
 

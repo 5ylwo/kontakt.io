@@ -3,8 +3,8 @@ package io.kontak.apps.anomaly.detector.anomalyDetector;
 import io.kontak.apps.event.TemperatureReading;
 
 public class AnomalyCandidate {
-  TemperatureReading temperatureReading;
-  boolean isDetectedAnomaly = false;
+  private TemperatureReading temperatureReading;
+  private boolean isDetectedAnomaly = false;
 
   public AnomalyCandidate(TemperatureReading temperatureReading) {
     this.temperatureReading = temperatureReading;
@@ -14,20 +14,11 @@ public class AnomalyCandidate {
     return temperatureReading;
   }
 
-  public void setTemperatureReading(TemperatureReading temperatureReading) {
-    this.temperatureReading = temperatureReading;
+  public boolean wasNotDetected() {
+    return !isDetectedAnomaly;
   }
-
-  public boolean isDetectedAnomaly() {
-    return isDetectedAnomaly;
-  }
-
-
-  public AnomalyCandidate setAsDetectedAnomaly() {
+  
+  public void setAsDetectedAnomaly() {
     isDetectedAnomaly = true;
-    return this;
   }
-
-
-
 }

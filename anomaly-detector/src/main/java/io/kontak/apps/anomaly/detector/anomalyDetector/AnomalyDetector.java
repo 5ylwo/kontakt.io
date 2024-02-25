@@ -5,8 +5,4 @@ import io.kontak.apps.event.TemperatureReading;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public interface AnomalyDetector extends Function<TemperatureReading, Stream<Anomaly>> {
-
-
-
-}
+public interface AnomalyDetector extends Function<TemperatureReading, Stream<Anomaly>> {}

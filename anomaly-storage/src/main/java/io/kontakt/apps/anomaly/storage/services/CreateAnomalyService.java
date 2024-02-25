@@ -1,6 +1,6 @@
 package io.kontakt.apps.anomaly.storage.services;
 
-import io.kontak.apps.detector.ANOMALY_DETECTOR_TYPE;
+import io.kontak.apps.detector.AnomalyDetectorType;
 import io.kontak.apps.event.Anomaly;
 import io.kontak.apps.event.TemperatureReading;
 import io.kontakt.apps.anomaly.storage.db.AnomalyDetectorTypeRepository;
@@ -33,7 +33,7 @@ public class CreateAnomalyService {
   }
 
   private AnomalyDetectorTypeEntity findOrCreateDetectorType (
-      ANOMALY_DETECTOR_TYPE anomalyDetectorType) {
+      AnomalyDetectorType anomalyDetectorType) {
     return anomalyDetectorTypeRepository.findById(anomalyDetectorType)
         .orElseGet(() -> new AnomalyDetectorTypeEntity(anomalyDetectorType));
   }

@@ -1,13 +1,11 @@
 config:
   anomalyDetectorTypes:
-    - name: Always Anomaly anomaly detector
-      clazz: io.kontak.apps.anomaly.detector.anomalyDetector.impl.AlwaysAnomalyAnomalyDetector
-      enabled: true
-
-    - name: Consecutive anomaly detector
-      clazz: io.kontak.apps.anomaly.detector.anomalyDetector.impl.ConsecutiveAnomalyDetector
+    alwaysAnomalyV1:
+      name: Always Anomaly anomaly detector
+      enabled:
+    consecutiveAnomalyV1:
+      name: Consecutive anomaly detector
       enabled: false
-
-    - name: Timeframe anomaly detector
-      clazz: io.kontak.apps.anomaly.detector.anomalyDetector.impl.TimeframeAnomalyDetector
+    timeframeAnomalyV1:
+      name: Timeframe anomaly detector
       enabled: false

@@ -1,6 +1,6 @@
 package io.kontak.apps.detector;
 
-public enum ANOMALY_DETECTOR_TYPE {
+public enum AnomalyDetectorType {
   ALWAYS_ANOMALY,
   CONSECUTIVE_ANOMALY,
   TIMEFRAME_ANOMALY;

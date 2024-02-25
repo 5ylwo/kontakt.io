@@ -1,7 +1,8 @@
 package io.kontak.apps.anomaly.detector.anomalyDetector.impl;
 
 import io.kontak.apps.anomaly.detector.anomalyDetector.AnomalyDetector;
-import io.kontak.apps.detector.ANOMALY_DETECTOR_TYPE;
+import io.kontak.apps.anomaly.detector.config.detectorTypes.AnomalyDetectorTypeConfig;
+import io.kontak.apps.detector.AnomalyDetectorType;
 import io.kontak.apps.event.Anomaly;
 import io.kontak.apps.event.TemperatureReading;
 import java.util.List;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AlwaysAnomalyAnomalyDetector implements AnomalyDetector {
+
+    public AlwaysAnomalyAnomalyDetector(AnomalyDetectorTypeConfig anomalyDetectorTypeConfig) {
+    }
 
     @Override
     public Stream<Anomaly> apply(TemperatureReading temperatureReading) {
@@ -21,7 +25,7 @@ public class AlwaysAnomalyAnomalyDetector implements AnomalyDetector {
                     temperatureReading.roomId(),
                     temperatureReading.thermometerId(),
                     temperatureReading.timestamp()),
-                ANOMALY_DETECTOR_TYPE.ALWAYS_ANOMALY
+                AnomalyDetectorType.ALWAYS_ANOMALY
             )
         ).stream();
     }
